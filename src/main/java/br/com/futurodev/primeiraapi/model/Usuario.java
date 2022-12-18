@@ -18,9 +18,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "usuario")
 public class Usuario implements UserDetails {
-
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_usuario")
-    // @SequenceGenerator(name = "seq_usuario", sequenceName = "seq_usuario", allocationSize = 1, initialValue = 1)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,16 +30,6 @@ public class Usuario implements UserDetails {
 
 
     private String nome;
-
-
-   // @CreationTimestamp
-   // @Column(columnDefinition = "timestamp without time zone DEFAULT timezone('utc'::text, CURRENT_TIMESTAMP(0))", updatable = false)
-   //private OffsetDateTime dataCadastro;
-
-
-  // @UpdateTimestamp
-  //   @Column(columnDefinition = "timestamp with time zone DEFAULT timezone('utc'::text, CURRENT_TIMESTAMP(0))")
-  //  private OffsetDateTime dataAtualizacao;
 
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
@@ -58,7 +45,7 @@ public class Usuario implements UserDetails {
 
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id", table = "role",
                     updatable = false,
-    foreignKey = @ForeignKey(name ="role_fk", value = ConstraintMode.CONSTRAINT)))
+                    foreignKey = @ForeignKey(name = "role_fk", value = ConstraintMode.CONSTRAINT)))
     private List<Role> roles; /* Os papeis ou acessos do usuário*/
 
 

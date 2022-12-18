@@ -38,26 +38,26 @@ public class PedidoController {
 
 
     @PostMapping
-    public ResponseEntity<PedidoRepresentationModel> cadastrar(@RequestBody PedidoInput pedidoInput){
-       Pedido pedido =  cadastroPedidoService.salvar(toDomainObject(pedidoInput));
-       return new ResponseEntity<PedidoRepresentationModel>(toRepresentatioModel(pedido), HttpStatus.CREATED);
+    public ResponseEntity<PedidoRepresentationModel> cadastrar(@RequestBody PedidoInput pedidoInput) {
+        Pedido pedido = cadastroPedidoService.salvar(toDomainObject(pedidoInput));
+        return new ResponseEntity<PedidoRepresentationModel>(toRepresentatioModel(pedido), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<PedidoRepresentationModel> atualizar(@RequestBody PedidoInput pedidoInput){
+    public ResponseEntity<PedidoRepresentationModel> atualizar(@RequestBody PedidoInput pedidoInput) {
         Pedido pedido = cadastroPedidoService.salvar(toDomainObject(pedidoInput));
-        return  new ResponseEntity<PedidoRepresentationModel>(toRepresentatioModel(pedido),HttpStatus.OK);
+        return new ResponseEntity<PedidoRepresentationModel>(toRepresentatioModel(pedido), HttpStatus.OK);
     }
 
     @DeleteMapping
     @ResponseBody
-    public ResponseEntity<String> delete(@RequestParam Long idPedido){
+    public ResponseEntity<String> delete(@RequestParam Long idPedido) {
         cadastroPedidoService.deletePedidoById(idPedido);
-        return new ResponseEntity<String>("Pedido de ID: "+idPedido+" deletado.", HttpStatus.OK);
+        return new ResponseEntity<String>("Pedido de ID: " + idPedido + " deletado.", HttpStatus.OK);
     }
 
     @GetMapping(value = "/{idPedido}")
-    public ResponseEntity<PedidoRepresentationModel> getPedidoById(@PathVariable(value = "idPedido") Long idPedido){
+    public ResponseEntity<PedidoRepresentationModel> getPedidoById(@PathVariable(value = "idPedido") Long idPedido) {
 
         PedidoRepresentationModel pedidoRepresentationModel =
                 toRepresentatioModel(cadastroPedidoService.getPedidoById(idPedido));
@@ -68,7 +68,7 @@ public class PedidoController {
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<List<PedidoRepresentationModel>> getPedidos(){
+    public ResponseEntity<List<PedidoRepresentationModel>> getPedidos() {
         List<Pedido> pedidos = cadastroPedidoService.getPedidos();
 
         return
@@ -90,38 +90,36 @@ public class PedidoController {
     @DeleteMapping(value = "/{idPedido}/item/{idItemPedido}")
     @ResponseBody
     public ResponseEntity<String> deleteItemPedidoById(@PathVariable(name = "idPedido") Long idPedido,
-            @PathVariable(name = "idItemPedido") Long idItemPedido){
+                                                       @PathVariable(name = "idItemPedido") Long idItemPedido) {
 
-      //ItemPedido itemPedido = cadastroItemPedidoService.getItemPedidoById(idItemPedido);
-      //  ItemPedido itemPedido = cadastroItemPedidoService.getItemPedido(idPedido, idItemPedido);
-      //cadastroItemPedidoService.deleteItemPedido(itemPedido);
+        //ItemPedido itemPedido = cadastroItemPedidoService.getItemPedidoById(idItemPedido);
+        //  ItemPedido itemPedido = cadastroItemPedidoService.getItemPedido(idPedido, idItemPedido);
+        //cadastroItemPedidoService.deleteItemPedido(itemPedido);
 
-       Pedido pedido = cadastroPedidoService.getPedidoById(idPedido);
+        Pedido pedido = cadastroPedidoService.getPedidoById(idPedido);
 
-        for (int i=0; i< pedido.getItensPedido().size(); i++) {
-            if (pedido.getItensPedido().get(i).getId() == idItemPedido){
+        for (int i = 0; i < pedido.getItensPedido().size(); i++) {
+            if (pedido.getItensPedido().get(i).getId() == idItemPedido) {
 
                 ItemPedido itemPedido = pedido.getItensPedido().remove(i);
                 itemPedido.setPedido(null);
                 itemPedido.setProduto(null);
                 pedido.getItensPedido().clear();
                 cadastroItemPedidoService.deleteItemPedido(itemPedido);
-                // cadastroItemPedidoService.deleteItemPedidoById(idItemPedido);
             }
         }
 
-       // ItemPedido itemPedido = pedido.getItensPedido().remove(0);
-       // itemPedido.setPedido(null);
-       //cadastroItemPedidoService.deleteItemPedidoById(idItemPedido);
-       // cadastroItemPedidoService.deleteItemPedido(itemPedido);
+        // ItemPedido itemPedido = pedido.getItensPedido().remove(0);
+        // itemPedido.setPedido(null);
+        //cadastroItemPedidoService.deleteItemPedidoById(idItemPedido);
+        // cadastroItemPedidoService.deleteItemPedido(itemPedido);
 
-      return new ResponseEntity<String>("Item de ID: "+idItemPedido+" deletado.",HttpStatus.OK);
+        return new ResponseEntity<String>("Item de ID: " + idItemPedido + " deletado.", HttpStatus.OK);
     }
 
 
-
     //converte de Model para DTO de Reposta
-    private PedidoRepresentationModel toRepresentatioModel(Pedido pedido){
+    private PedidoRepresentationModel toRepresentatioModel(Pedido pedido) {
         PedidoRepresentationModel pedidoRepresentationModel = new PedidoRepresentationModel();
         pedidoRepresentationModel.setId(pedido.getId());
         pedidoRepresentationModel.setIdCliente(pedido.getCliente().getId());
@@ -142,13 +140,12 @@ public class PedidoController {
         }
 
 
-
         return pedidoRepresentationModel;
     }
 
 
     //Converte de DTO de entrada para Model
-    private Pedido toDomainObject(PedidoInput pedidoInput){
+    private Pedido toDomainObject(PedidoInput pedidoInput) {
 
         Pedido pedido = new Pedido();
 
@@ -162,23 +159,19 @@ public class PedidoController {
             ItemPedido itemPedido = new ItemPedido();
             itemPedido.setId(pedidoInput.getItensPedido().get(i).getId());
             itemPedido.setPedido(pedido);
-            //itemPedido.setIdPedido(pedido.getId());
             itemPedido.setProduto(cadastroProdutoService.getProdutoById(pedidoInput.getItensPedido().get(i).getIdProduto()));
 
             // se o ID do itemPedido for null busca o preço do cadastro de produto
-            if(pedidoInput.getItensPedido().get(i).getId() == null) {
+            if (pedidoInput.getItensPedido().get(i).getId() == null) {
                 itemPedido.setValorItem(cadastroProdutoService
                         .getProdutoById(pedidoInput
                                 .getItensPedido().get(i)
                                 .getIdProduto()).getPrecoVenda());
-            // se não pega o preco do Json de entrada
-            }else{
+                // se não pega o preco do Json de entrada
+            } else {
                 itemPedido.setValorItem(pedidoInput.getItensPedido().get(i).getPrecoVenda());
             }
-
             itemPedido.setQuantidade(pedidoInput.getItensPedido().get(i).getQuantidade());
-
-
             // adiciono a lista de itensPedido do model
             pedido.getItensPedido().add(itemPedido);
 
@@ -188,13 +181,11 @@ public class PedidoController {
         return pedido;
     }
 
-    private List<PedidoRepresentationModel> toCollectionRepresentationModel(List<Pedido> pedidos){
+    private List<PedidoRepresentationModel> toCollectionRepresentationModel(List<Pedido> pedidos) {
         return pedidos.stream()
                 .map(Pedido -> toRepresentatioModel(Pedido))
                 .collect(Collectors.toList());
     }
-
-
 
 
 }

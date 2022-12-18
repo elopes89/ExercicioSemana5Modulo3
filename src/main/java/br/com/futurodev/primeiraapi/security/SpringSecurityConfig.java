@@ -48,6 +48,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                  * */
                 //.antMatchers(HttpMethod.DELETE, "/usuarios/*").hasRole("ADMIN")
                 .antMatchers("/usuarios/**").hasRole("ADMIN")
+                .antMatchers("/usuarios/**").hasRole("CAIXA")
                 .antMatchers("/produtos/**").hasRole("ADMIN")
                 .antMatchers("/pedidos/**").hasRole("ADMIN")
 
@@ -60,7 +61,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 /*E utilize o formulario de Login padrão do spring pra fazer a autenticação
                  Nesse caso além de fornecer a tela de login, o spring também fornece um controller
-                 que ele mesmo acessa e faz toda a magica de receber o login e senha e chamar os métodos
+                 que ele mesmo acessa e faz toda a mágica de receber o login e senha e chamar os métodos
                 e service para realizar a autenticação
                 */
                 // .formLogin();

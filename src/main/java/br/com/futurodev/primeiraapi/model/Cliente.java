@@ -34,7 +34,6 @@ public class Cliente implements Serializable{
 
 
     @OneToMany(mappedBy = "cliente", fetch = FetchType.EAGER)
-    //@JsonManagedReference
     private List<Pedido> pedidos;
 
     @JsonManagedReference
