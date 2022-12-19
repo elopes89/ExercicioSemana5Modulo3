@@ -5,11 +5,12 @@ import br.com.futurodev.primeiraapi.dto.PedidoRepresentationModel;
 import br.com.futurodev.primeiraapi.input.PedidoInput;
 import br.com.futurodev.primeiraapi.model.ItemPedido;
 import br.com.futurodev.primeiraapi.model.Pedido;
-import br.com.futurodev.primeiraapi.model.Produto;
 import br.com.futurodev.primeiraapi.service.*;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/pedidos")
 public class PedidoController {
+
 
     @Autowired
     private CadastroPedidoService cadastroPedidoService;
@@ -36,28 +38,47 @@ public class PedidoController {
     @Autowired
     private CadastroItemPedidoService cadastroItemPedidoService;
 
-
+    @ApiOperation("CADASTRAR")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Pedido cadastrado")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @PostMapping
-    public ResponseEntity<PedidoRepresentationModel> cadastrar(@RequestBody PedidoInput pedidoInput) {
+    public ResponseEntity<PedidoRepresentationModel> cadastrar(@ApiParam(value = "Pedido cadastrado") @RequestBody PedidoInput pedidoInput) {
         Pedido pedido = cadastroPedidoService.salvar(toDomainObject(pedidoInput));
         return new ResponseEntity<PedidoRepresentationModel>(toRepresentatioModel(pedido), HttpStatus.CREATED);
     }
 
+    @ApiOperation("ALTERAR")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Produto alterada")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @PutMapping
-    public ResponseEntity<PedidoRepresentationModel> atualizar(@RequestBody PedidoInput pedidoInput) {
+    public ResponseEntity<PedidoRepresentationModel> atualizar(@ApiParam(value = "Pedido editado", example = "1") @RequestBody PedidoInput pedidoInput) {
         Pedido pedido = cadastroPedidoService.salvar(toDomainObject(pedidoInput));
         return new ResponseEntity<PedidoRepresentationModel>(toRepresentatioModel(pedido), HttpStatus.OK);
     }
 
+    @ApiOperation("EXCLUIR")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Pedido excluído")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @DeleteMapping
     @ResponseBody
-    public ResponseEntity<String> delete(@RequestParam Long idPedido) {
+    public ResponseEntity<String> delete(@ApiParam(value = "Id Pedido: ", example = "1") @RequestParam Long idPedido) {
         cadastroPedidoService.deletePedidoById(idPedido);
         return new ResponseEntity<String>("Pedido de ID: " + idPedido + " deletado.", HttpStatus.OK);
     }
 
+    @ApiOperation("OBTER USUÁRIO POR ID")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Pedido encontrado")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @GetMapping(value = "/{idPedido}")
-    public ResponseEntity<PedidoRepresentationModel> getPedidoById(@PathVariable(value = "idPedido") Long idPedido) {
+    public ResponseEntity<PedidoRepresentationModel> getPedidoById(@ApiParam(value = "Pedido deletado", example = "1") @PathVariable(value = "idPedido") Long idPedido) {
 
         PedidoRepresentationModel pedidoRepresentationModel =
                 toRepresentatioModel(cadastroPedidoService.getPedidoById(idPedido));
@@ -66,6 +87,11 @@ public class PedidoController {
 
     }
 
+    @ApiOperation("LISTAR TODOS POEDIDOS")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Lista de pedidos")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @GetMapping
     @ResponseBody
     public ResponseEntity<List<PedidoRepresentationModel>> getPedidos() {
@@ -78,7 +104,6 @@ public class PedidoController {
     @GetMapping(value = "/cliente/{idCliente}")
     public ResponseEntity<List<PedidoRepresentationModel>> getPedidoByIdCliente(
             @PathVariable(name = "idCliente") Long idCliente) {
-
         List<Pedido> pedidos = cadastroPedidoService.getPedidoByIdCliente(idCliente);
         List<PedidoRepresentationModel> pedidosRM = toCollectionRepresentationModel(pedidos);
 
@@ -91,11 +116,6 @@ public class PedidoController {
     @ResponseBody
     public ResponseEntity<String> deleteItemPedidoById(@PathVariable(name = "idPedido") Long idPedido,
                                                        @PathVariable(name = "idItemPedido") Long idItemPedido) {
-
-        //ItemPedido itemPedido = cadastroItemPedidoService.getItemPedidoById(idItemPedido);
-        //  ItemPedido itemPedido = cadastroItemPedidoService.getItemPedido(idPedido, idItemPedido);
-        //cadastroItemPedidoService.deleteItemPedido(itemPedido);
-
         Pedido pedido = cadastroPedidoService.getPedidoById(idPedido);
 
         for (int i = 0; i < pedido.getItensPedido().size(); i++) {
@@ -109,16 +129,10 @@ public class PedidoController {
             }
         }
 
-        // ItemPedido itemPedido = pedido.getItensPedido().remove(0);
-        // itemPedido.setPedido(null);
-        //cadastroItemPedidoService.deleteItemPedidoById(idItemPedido);
-        // cadastroItemPedidoService.deleteItemPedido(itemPedido);
-
         return new ResponseEntity<String>("Item de ID: " + idItemPedido + " deletado.", HttpStatus.OK);
     }
 
 
-    //converte de Model para DTO de Reposta
     private PedidoRepresentationModel toRepresentatioModel(Pedido pedido) {
         PedidoRepresentationModel pedidoRepresentationModel = new PedidoRepresentationModel();
         pedidoRepresentationModel.setId(pedido.getId());
@@ -143,8 +157,6 @@ public class PedidoController {
         return pedidoRepresentationModel;
     }
 
-
-    //Converte de DTO de entrada para Model
     private Pedido toDomainObject(PedidoInput pedidoInput) {
 
         Pedido pedido = new Pedido();
@@ -161,23 +173,18 @@ public class PedidoController {
             itemPedido.setPedido(pedido);
             itemPedido.setProduto(cadastroProdutoService.getProdutoById(pedidoInput.getItensPedido().get(i).getIdProduto()));
 
-            // se o ID do itemPedido for null busca o preço do cadastro de produto
             if (pedidoInput.getItensPedido().get(i).getId() == null) {
                 itemPedido.setValorItem(cadastroProdutoService
                         .getProdutoById(pedidoInput
                                 .getItensPedido().get(i)
                                 .getIdProduto()).getPrecoVenda());
-                // se não pega o preco do Json de entrada
             } else {
                 itemPedido.setValorItem(pedidoInput.getItensPedido().get(i).getPrecoVenda());
             }
             itemPedido.setQuantidade(pedidoInput.getItensPedido().get(i).getQuantidade());
-            // adiciono a lista de itensPedido do model
             pedido.getItensPedido().add(itemPedido);
 
         }
-
-
         return pedido;
     }
 
@@ -186,6 +193,4 @@ public class PedidoController {
                 .map(Pedido -> toRepresentatioModel(Pedido))
                 .collect(Collectors.toList());
     }
-
-
 }

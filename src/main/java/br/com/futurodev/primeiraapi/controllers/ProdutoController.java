@@ -1,6 +1,4 @@
 package br.com.futurodev.primeiraapi.controllers;
-
-
 import br.com.futurodev.primeiraapi.dto.ProdutoRepresentationModel;
 import br.com.futurodev.primeiraapi.input.ProdutoInput;
 import br.com.futurodev.primeiraapi.input.UsuarioInput;
@@ -21,7 +19,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/produtos")
 public class ProdutoController {
-
     @Autowired
     private CadastroProdutoService cadastroProdutoService;
 

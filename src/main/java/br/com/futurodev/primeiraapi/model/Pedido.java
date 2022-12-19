@@ -30,7 +30,6 @@ public class Pedido implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_cliente", foreignKey = @ForeignKey(name = "fk_cliente"))
-    // @JsonBackReference
     private Cliente cliente;
 
     @OneToOne
