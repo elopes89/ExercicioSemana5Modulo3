@@ -20,34 +20,33 @@ import java.util.ArrayList;
 public class SpringFoxConfig extends WebMvcConfigurationSupport {
 
     @Bean
-    public Docket apiDocket(){
-        return new Docket(DocumentationType.SWAGGER_2) // informa qual o tipo de documentação que vamos usar
-                .select() // retornamos um builder para selecionar os endpoints que deve ser expostos
-                .apis(RequestHandlerSelectors.any()) // especificar o que queremos, e quais controladores, endpoints que o springfox orá scanear
-                .build() // montamos nosso sumário Docket
+    public Docket apiDocket() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.any())
+                .build()
                 .apiInfo(metaData())
                 .tags(new Tag("Usuários", "Gerencia usuários"),
-                      new Tag("Produtos", "Gerencia produtos"));
-
+                        new Tag("Produtos", "Gerencia produtos"),
+                        new Tag("Pedidos", "Gerencia pedidos"));
     }
 
-    private ApiInfo metaData(){
+    private ApiInfo metaData() {
         return new ApiInfoBuilder()
-                .title("Spring Boot REST API")
-                .description("Nossa primeira Spring Boot REST API ")
+                .title("SPRING BOOT REST API")
+                .description("EXERCÍCIO SEMANA 5 MÓDULO 3 ")
                 .version("1.0.0")
                 .license("Apache License Version 2.0")
                 .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
                 .build();
-
     }
 
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("swagger-ui.html") // informamos o arquivo a ser renderizado no navegador
-                .addResourceLocations("classpath:/META-INF/resources/"); // informamos o caminho do arquivo
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
 
-        registry.addResourceHandler("/webjars/**") // informa outros arquivos de css, js, png dentre outros
+        registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
 
     }

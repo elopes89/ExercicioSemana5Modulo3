@@ -6,9 +6,7 @@ import br.com.futurodev.primeiraapi.input.UsuarioInput;
 import br.com.futurodev.primeiraapi.model.Telefone;
 import br.com.futurodev.primeiraapi.model.Usuario;
 import br.com.futurodev.primeiraapi.service.CadastroUsuarioService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,22 +25,34 @@ public class UsuarioController {
     private CadastroUsuarioService casdastroUsuarioService;
 
     @ApiOperation("Salva um usuário")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Usuário alterado")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @PostMapping(value = "/", produces = "application/json")
-    public ResponseEntity<UsuarioRepresentationModel> cadastrar(@RequestBody @Valid UsuarioInput usuarioInput) {
+    public ResponseEntity<UsuarioRepresentationModel> cadastrar(@ApiParam(value = "Usuário cadastrado") @RequestBody @Valid UsuarioInput usuarioInput) {
         Usuario usu = toDomainObject(usuarioInput);
         casdastroUsuarioService.salvar(usu);
         return new ResponseEntity<UsuarioRepresentationModel>(toModel(usu), HttpStatus.CREATED);
     }
 
     @ApiOperation("Atualiza um usuário")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Usuário alterado")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @PutMapping(value = "/", produces = "application/json")
-    public ResponseEntity<UsuarioRepresentationModel> atualizar(@RequestBody UsuarioInput usuarioInput) {
+    public ResponseEntity<UsuarioRepresentationModel> atualizar(@ApiParam(value = "Usuário editado", example = "1") @RequestBody UsuarioInput usuarioInput) {
         Usuario usuario = casdastroUsuarioService.salvar(toDomainObject(usuarioInput));
         return new ResponseEntity<UsuarioRepresentationModel>(toModel(usuario), HttpStatus.OK);
 
     }
 
     @ApiOperation("Deleta um usuário")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Usuário deletado")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @DeleteMapping(value = "/")
     @ResponseBody
     public ResponseEntity<String> delete(@ApiParam(value = "ID do usuário", example = "1") @RequestParam Long idUsuario) {
@@ -51,14 +61,22 @@ public class UsuarioController {
     }
 
     @ApiOperation("Busca um usuário por ID")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Usuário obtido")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @GetMapping(value = "/{idUsuario}", produces = "application/json")
-    public ResponseEntity<UsuarioRepresentationModel> getUserById(@PathVariable(value = "idUsuario") Long idUsuario) {
+    public ResponseEntity<UsuarioRepresentationModel> getUserById(@ApiParam(value = "ID do usuário", example = "1") @PathVariable(value = "idUsuario") Long idUsuario) {
         Usuario usu = casdastroUsuarioService.getUserById(idUsuario);
         UsuarioRepresentationModel usuarioRepresentationModel = toModel(usu);
         return new ResponseEntity<UsuarioRepresentationModel>(usuarioRepresentationModel, HttpStatus.OK);
     }
 
     @ApiOperation("Busca usuários por nome")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Usuário encontardo por nome")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @GetMapping(value = "/buscarPorNome", produces = "application/json")
     @ResponseBody
     public ResponseEntity<List<UsuarioRepresentationModel>> getUserByName(@RequestParam(name = "nome") String nome) {
@@ -68,6 +86,10 @@ public class UsuarioController {
     }
 
     @ApiOperation("Listar usuários")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Usuários listados")
+            , @ApiResponse(code = 401, message = "Usuário sem permissão para acessar o recurso")
+            , @ApiResponse(code = 403, message = "Proibido")
+            , @ApiResponse(code = 404, message = "Recurso não encontrado")})
     @GetMapping
     @ResponseBody
     public ResponseEntity<List<UsuarioRepresentationModel>> getUsers() {
